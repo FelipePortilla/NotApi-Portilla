@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using API.Dtos;
 using AutoMapper;
@@ -10,12 +9,13 @@ using Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
+
 public class RolvsMaestroController : BaseController
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public RolvsMaestroController(IUnitOfWork unitOfWork,IMapper mapper)
+    public RolvsMaestroController(IUnitOfWork unitOfWork, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -26,88 +26,93 @@ public class RolvsMaestroController : BaseController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<IEnumerable<RolvsMaestroDto>>> Get()
     {
-        var rolvsmaestro = await _unitOfWork.RolvsMaestros.GetAllAsync();
-        return _mapper.Map<List<RolvsMaestroDto>>(rolvsmaestro);
+        var rolvsMaestro = await _unitOfWork.RolvsMaestros.GetAllAsync();
+        return _mapper.Map<List<RolvsMaestroDto>>(rolvsMaestro);
     }
-    [HttpGet("{id}")]
+
+    [HttpGet("{Id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<RolvsMaestroDto>> Get(int id)
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<RolvsMaestroDto>> Get(int Id)
     {
-        var rolvsmaestro = await _unitOfWork.RolvsMaestros.GetByIdAsync(id);
-        if(rolvsmaestro == null)
+        var rolvsMaestro = await _unitOfWork.RolvsMaestros.GetByIdAsync(Id);
+        if (rolvsMaestro == null)
         {
             return NotFound();
         }
-        return _mapper.Map<RolvsMaestroDto>(rolvsmaestro);
+        return _mapper.Map<RolvsMaestroDto>(rolvsMaestro);
     }
+
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<RolvsMaestroDto>> Post([FromBody] RolvsMaestroDto rolvsmaestroDto)
+    public async Task<ActionResult<RolvsMaestroDto>> Post(RolvsMaestroDto rolvsMaestroDto)
     {
-        var rolvsmaestro = _mapper.Map<RolvsMaestro>(rolvsmaestroDto);
-
-        if(rolvsmaestro == null)
-            return BadRequest();
-        if (rolvsmaestroDto.FechaCreacion == DateOnly.MinValue)
+        var rolvsMaestro = _mapper.Map<RolvsMaestro>(rolvsMaestroDto);
+        if (rolvsMaestroDto.FechaCreacion == DateOnly.MinValue)
         {
-            rolvsmaestroDto.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
-            rolvsmaestro.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
+            rolvsMaestroDto.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
+            rolvsMaestro.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
         }
-        if (rolvsmaestro.FechaModificacion == DateOnly.MinValue)
+        if (rolvsMaestroDto.FechaModificacion == DateOnly.MinValue)
         {
-            rolvsmaestroDto.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
-            rolvsmaestro.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
+            rolvsMaestroDto.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
+            rolvsMaestro.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
         }
-        _unitOfWork.RolvsMaestros.Add(rolvsmaestro);
+        _unitOfWork.RolvsMaestros.Add(rolvsMaestro);
         await _unitOfWork.SaveAsync();
-        rolvsmaestroDto.Id = rolvsmaestro.Id;
-        return CreatedAtAction(nameof(Post),new {id = rolvsmaestro.Id},rolvsmaestroDto);
+        if (rolvsMaestroDto == null)
+        {
+            return BadRequest();
+        }
+        rolvsMaestroDto.Id = rolvsMaestro.Id;
+        return CreatedAtAction(nameof(Post), new { id = rolvsMaestroDto.Id }, rolvsMaestroDto);
     }
+
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<RolvsMaestroDto>> Put(int id, [FromBody] RolvsMaestroDto rolvsmaestroDto)
+    public async Task<ActionResult<RolvsMaestroDto>> Put(int id, [FromBody] RolvsMaestroDto rolvsMaestroDto)
     {
-        if(rolvsmaestroDto.Id == 0)
+        if (rolvsMaestroDto.Id == 0)
         {
-            rolvsmaestroDto.Id = id;
+            rolvsMaestroDto.Id = id;
         }
-        if(rolvsmaestroDto.Id != id)
+        if (rolvsMaestroDto.Id != id)
         {
             return NotFound();
         }
-        var rolvsmaestro = _mapper.Map<RolvsMaestro>(rolvsmaestroDto);
-        if(rolvsmaestro==null)
-            return BadRequest();
-        if(rolvsmaestro.FechaCreacion == DateOnly.MinValue)
+        var rolvsMaestro = _mapper.Map<RolvsMaestro>(rolvsMaestroDto);
+        if (rolvsMaestroDto.FechaCreacion == DateOnly.MinValue)
         {
-            rolvsmaestroDto.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
-            rolvsmaestro.FechaCreacion = DateOnly.FromDateTime(DateTime.Now); 
+            rolvsMaestroDto.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
+            rolvsMaestro.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
         }
-        if(rolvsmaestroDto.FechaModificacion == DateOnly.MinValue)
+        if (rolvsMaestroDto.FechaModificacion == DateOnly.MinValue)
         {
-            rolvsmaestroDto.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
-            rolvsmaestro.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
+            rolvsMaestroDto.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
+            rolvsMaestro.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
         }
-        _unitOfWork.RolvsMaestros.Update(rolvsmaestro);
+        rolvsMaestroDto.Id = rolvsMaestro.Id;
+        _unitOfWork.RolvsMaestros.Update(rolvsMaestro);
         await _unitOfWork.SaveAsync();
-        return rolvsmaestroDto;
+        return rolvsMaestroDto;
     }
+
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        var rolvsmaestro = await _unitOfWork.RolvsMaestros.GetByIdAsync(id);
-        if(rolvsmaestro == null)
+        var rolvsMaestro = await _unitOfWork.RolvsMaestros.GetByIdAsync(id);
+        if (rolvsMaestro == null)
+        {
             return NotFound();
-        _unitOfWork.RolvsMaestros.Remove(rolvsmaestro);
+        }
+        _unitOfWork.RolvsMaestros.Remove(rolvsMaestro);
         await _unitOfWork.SaveAsync();
         return NoContent();
     }
-
 }

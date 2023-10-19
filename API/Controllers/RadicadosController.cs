@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using API.Dtos;
 using AutoMapper;
@@ -10,12 +9,13 @@ using Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
+
 public class RadicadosController : BaseController
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public RadicadosController(IUnitOfWork unitOfWork,IMapper mapper)
+    public RadicadosController(IUnitOfWork unitOfWork, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -26,88 +26,93 @@ public class RadicadosController : BaseController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<IEnumerable<RadicadosDto>>> Get()
     {
-        var radicado = await _unitOfWork.Radicados.GetAllAsync();
-        return _mapper.Map<List<RadicadosDto>>(radicado);
+        var radicados = await _unitOfWork.Radicados.GetAllAsync();
+        return _mapper.Map<List<RadicadosDto>>(radicados);
     }
-    [HttpGet("{id}")]
+
+    [HttpGet("{Id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<RadicadosDto>> Get(int id)
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<RadicadosDto>> Get(int Id)
     {
-        var radicado = await _unitOfWork.Radicados.GetByIdAsync(id);
-        if(radicado == null)
+        var radicados = await _unitOfWork.Radicados.GetByIdAsync(Id);
+        if (radicados == null)
         {
             return NotFound();
         }
-        return _mapper.Map<RadicadosDto>(radicado);
+        return _mapper.Map<RadicadosDto>(radicados);
     }
+
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<RadicadosDto>> Post([FromBody] RadicadosDto radicadoDto)
+    public async Task<ActionResult<RadicadosDto>> Post(RadicadosDto radicadosDto)
     {
-        var radicado = _mapper.Map<Radicados>(radicadoDto);
-
-        if(radicado == null)
-            return BadRequest();
-        if (radicadoDto.FechaCreacion == DateOnly.MinValue)
+        var radicados = _mapper.Map<Radicados>(radicadosDto);
+        if (radicadosDto.FechaCreacion == DateOnly.MinValue)
         {
-            radicadoDto.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
-            radicado.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
+            radicadosDto.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
+            radicados.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
         }
-        if (radicado.FechaModificacion == DateOnly.MinValue)
+        if (radicadosDto.FechaModificacion == DateOnly.MinValue)
         {
-            radicadoDto.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
-            radicado.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
+            radicadosDto.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
+            radicados.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
         }
-        _unitOfWork.Radicados.Add(radicado);
+        _unitOfWork.Radicados.Add(radicados);
         await _unitOfWork.SaveAsync();
-        radicadoDto.Id = radicado.Id;
-        return CreatedAtAction(nameof(Post),new {id = radicado.Id},radicadoDto);
+        if (radicadosDto == null)
+        {
+            return BadRequest();
+        }
+        radicadosDto.Id = radicados.Id;
+        return CreatedAtAction(nameof(Post), new { id = radicadosDto.Id }, radicadosDto);
     }
+
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<RadicadosDto>> Put(int id, [FromBody] RadicadosDto radicadoDto)
+    public async Task<ActionResult<RadicadosDto>> Put(int id, [FromBody] RadicadosDto radicadosDto)
     {
-        if(radicadoDto.Id == 0)
+        if (radicadosDto.Id == 0)
         {
-            radicadoDto.Id = id;
+            radicadosDto.Id = id;
         }
-        if(radicadoDto.Id != id)
+        if (radicadosDto.Id != id)
         {
             return NotFound();
         }
-        var radicado = _mapper.Map<Radicados>(radicadoDto);
-        if(radicado==null)
-            return BadRequest();
-        if(radicado.FechaCreacion == DateOnly.MinValue)
+        var radicados = _mapper.Map<Radicados>(radicadosDto);
+        if (radicadosDto.FechaCreacion == DateOnly.MinValue)
         {
-            radicadoDto.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
-            radicado.FechaCreacion = DateOnly.FromDateTime(DateTime.Now); 
+            radicadosDto.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
+            radicados.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
         }
-        if(radicadoDto.FechaModificacion == DateOnly.MinValue)
+        if (radicadosDto.FechaModificacion == DateOnly.MinValue)
         {
-            radicadoDto.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
-            radicado.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
+            radicadosDto.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
+            radicados.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
         }
-        _unitOfWork.Radicados.Update(radicado);
+        radicadosDto.Id = radicados.Id;
+        _unitOfWork.Radicados.Update(radicados);
         await _unitOfWork.SaveAsync();
-        return radicadoDto;
+        return radicadosDto;
     }
+
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        var radicado = await _unitOfWork.Radicados.GetByIdAsync(id);
-        if(radicado == null)
+        var radicados = await _unitOfWork.Radicados.GetByIdAsync(id);
+        if (radicados == null)
+        {
             return NotFound();
-        _unitOfWork.Radicados.Remove(radicado);
+        }
+        _unitOfWork.Radicados.Remove(radicados);
         await _unitOfWork.SaveAsync();
         return NoContent();
     }
-
 }

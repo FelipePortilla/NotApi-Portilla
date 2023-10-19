@@ -2,18 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
 
-namespace Core.Entities
+namespace Core.Entities;
+
+public class Submodulos : BaseEntity
 {
-    public class SubModulos :BaseEntity
-    {
-        [Required]
-    public string NombreSubModulo { get; set; }
-    [Required]
-    public DateOnly FechaCreacion { get; set; }
-    [Required]
-    public DateOnly FechaModificacion { get; set; }
-    public ICollection<MaestrovsSubmodulos> MaestrosvsSubmodulos { get; set; }
-    }
+    public string NombreSubmodulo { get; set; }
+    public ICollection<MaestrosvsSubmodulos> MaestrosvsSubmodulos { get; set; }
 }

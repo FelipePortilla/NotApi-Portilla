@@ -4,23 +4,25 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace Core.Interfaces;
-public interface IUnitOfWork 
+
+public interface IUnitOfWork
 {
-    IAuditoria Auditorias {get;}
-    IBlockchain Blockchains {get;}
-    IEstadoNotificacion EstadoNotificaciones {get;}
-    IFormato Formatos {get;}
-    IGenericovsSubmodulos GenericovsSubmodulos {get;}
-    IHiloRespuestaNotificacion HiloRespuestaNotificaciones {get;}
-    IMaestrovsSubmodulos MaestrovsSubmodulos {get;}
-    IModuloNotificacion ModuloNotificaciones {get;}
-    IModulosMaestro ModulosMaestros {get;}
-    IPermisoGenericos PermisoGenericos {get;}
-    IRadicados Radicados {get;}
-    IRol Rols {get;}
-    IRolvsMaestro RolvsMaestros {get;}
-    ISubModulos SubModulos {get;}
-    ITipoNotificacion TipoNotificaciones {get;}
-    ITipoRequerimientos TipoRequerimientos {get;}
+    public IAuditoria Auditorias { get; }
+    public IBlockChain BlockChains { get; }
+    public IEstadoNotificacion EstadoNotificaciones { get; }
+    public IFormatos Formatos { get; }
+    public IGenericovsSubmodulos GenericovsSubmodulos { get; }
+    public IHiloRespuestaNotificacion HiloRespuestaNotificaciones { get; }
+    public IMaestrosvsSubmodulos MaestrosVsSubmodulos { get; }
+    public IModuloMaestros ModuloMaestros { get; }
+    public IModuloNotificacion ModuloNotificaciones { get; }
+    public IPermisosGenericos PermisosGenericos { get; }
+    public IRadicados Radicados { get; }
+    public IRol Roles { get; }
+    public IRolvsMaestro RolvsMaestros { get; }
+    public ISubmodulos Submodulos { get; }
+    public ITipoNotificaciones TipoNotificaciones { get; }
+    public ITipoRequerimiento TipoRequerimientos { get; }
+
     Task<int> SaveAsync();
 }

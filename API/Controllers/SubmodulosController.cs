@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using API.Dtos;
 using AutoMapper;
@@ -10,12 +9,13 @@ using Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
+
 public class SubmodulosController : BaseController
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public SubmodulosController(IUnitOfWork unitOfWork,IMapper mapper)
+    public SubmodulosController(IUnitOfWork unitOfWork, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -26,88 +26,93 @@ public class SubmodulosController : BaseController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<IEnumerable<SubmodulosDto>>> Get()
     {
-        var submodulos = await _unitOfWork.SubModulos.GetAllAsync();
+        var submodulos = await _unitOfWork.Submodulos.GetAllAsync();
         return _mapper.Map<List<SubmodulosDto>>(submodulos);
     }
-    [HttpGet("{id}")]
+
+    [HttpGet("{Id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<SubmodulosDto>> Get(int id)
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<SubmodulosDto>> Get(int Id)
     {
-        var submodulo = await _unitOfWork.SubModulos.GetByIdAsync(id);
-        if(submodulo == null)
+        var submodulos = await _unitOfWork.Submodulos.GetByIdAsync(Id);
+        if (submodulos == null)
         {
             return NotFound();
         }
-        return _mapper.Map<SubmodulosDto>(submodulo);
+        return _mapper.Map<SubmodulosDto>(submodulos);
     }
+
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<SubmodulosDto>> Post([FromBody] SubmodulosDto submoduloDto)
+    public async Task<ActionResult<SubmodulosDto>> Post(SubmodulosDto submodulosDto)
     {
-        var submodulo = _mapper.Map<SubModulos>(submoduloDto);
-
-        if(submodulo == null)
-            return BadRequest();
-        if (submoduloDto.FechaCreacion == DateOnly.MinValue)
+        var submodulos = _mapper.Map<Submodulos>(submodulosDto);
+        if (submodulosDto.FechaCreacion == DateOnly.MinValue)
         {
-            submoduloDto.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
-            submodulo.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
+            submodulosDto.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
+            submodulos.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
         }
-        if (submodulo.FechaModificacion == DateOnly.MinValue)
+        if (submodulosDto.FechaModificacion == DateOnly.MinValue)
         {
-            submoduloDto.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
-            submodulo.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
+            submodulosDto.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
+            submodulos.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
         }
-        _unitOfWork.SubModulos.Add(submodulo);
+        _unitOfWork.Submodulos.Add(submodulos);
         await _unitOfWork.SaveAsync();
-        submoduloDto.Id = submodulo.Id;
-        return CreatedAtAction(nameof(Post),new {id = submodulo.Id},submoduloDto);
+        if (submodulosDto == null)
+        {
+            return BadRequest();
+        }
+        submodulosDto.Id = submodulos.Id;
+        return CreatedAtAction(nameof(Post), new { id = submodulosDto.Id }, submodulosDto);
     }
+
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<SubmodulosDto>> Put(int id, [FromBody] SubmodulosDto submoduloDto)
+    public async Task<ActionResult<SubmodulosDto>> Put(int id, [FromBody] SubmodulosDto submodulosDto)
     {
-        if(submoduloDto.Id == 0)
+        if (submodulosDto.Id == 0)
         {
-            submoduloDto.Id = id;
+            submodulosDto.Id = id;
         }
-        if(submoduloDto.Id != id)
+        if (submodulosDto.Id != id)
         {
             return NotFound();
         }
-        var submodulo = _mapper.Map<SubModulos>(submoduloDto);
-        if(submodulo==null)
-            return BadRequest();
-        if(submodulo.FechaCreacion == DateOnly.MinValue)
+        var submodulos = _mapper.Map<Submodulos>(submodulosDto);
+        if (submodulosDto.FechaCreacion == DateOnly.MinValue)
         {
-            submoduloDto.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
-            submodulo.FechaCreacion = DateOnly.FromDateTime(DateTime.Now); 
+            submodulosDto.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
+            submodulos.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
         }
-        if(submoduloDto.FechaModificacion == DateOnly.MinValue)
+        if (submodulosDto.FechaModificacion == DateOnly.MinValue)
         {
-            submoduloDto.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
-            submodulo.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
+            submodulosDto.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
+            submodulos.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
         }
-        _unitOfWork.SubModulos.Update(submodulo);
+        submodulosDto.Id = submodulos.Id;
+        _unitOfWork.Submodulos.Update(submodulos);
         await _unitOfWork.SaveAsync();
-        return submoduloDto;
+        return submodulosDto;
     }
+
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        var submodulo = await _unitOfWork.SubModulos.GetByIdAsync(id);
-        if(submodulo == null)
+        var submodulos = await _unitOfWork.Submodulos.GetByIdAsync(id);
+        if (submodulos == null)
+        {
             return NotFound();
-        _unitOfWork.SubModulos.Remove(submodulo);
+        }
+        _unitOfWork.Submodulos.Remove(submodulos);
         await _unitOfWork.SaveAsync();
         return NoContent();
     }
-
 }

@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 using Core.Entities;
 
 namespace Core.Interfaces;
-public interface IHiloRespuestaNotificacion : IGenericRepository<HiloRespuesNotificacion>
+
+public interface IHiloRespuestaNotificacion : IGenericRepository<HiloRespuestaNotificacion>
 {
 
 }

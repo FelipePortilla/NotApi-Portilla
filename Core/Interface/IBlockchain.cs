@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 using Core.Entities;
 
 namespace Core.Interfaces;
-public interface IBlockchain : IGenericRepository<BlockChain>
+
+public interface IBlockChain : IGenericRepository<BlockChain>
 {
 
 }

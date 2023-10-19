@@ -2,20 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
 
 namespace Core.Entities;
 
 public class GenericovsSubmodulos : BaseEntity
 {
-    [Required]
-    public DateOnly FechaCreacion { get; set; }
-    [Required]
-    public DateOnly FechaModificacion { get; set; }
-    public int IdPermisoGenericoFk { get; set; }
+    public int IdGenericos { get; set; }
     public PermisosGenericos PermisosGenericos { get; set; }
-    public int IdRolFk { get; set; }
-    public Rol Rols { get; set; }
-    public int IdMaestrovsSubmodulosFk { get; set; }
-    public MaestrovsSubmodulos MaestrosvsSubmodulos { get; set; }
+    public int IdSubmodulos { get; set; }
+    public MaestrosvsSubmodulos MaestrosvsSubmodulos { get; set; }
+    public int IdRol { get; set; }
+    public Rol Roles { get; set; }
 }

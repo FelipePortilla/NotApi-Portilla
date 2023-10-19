@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using API.Dtos;
 using AutoMapper;
@@ -10,12 +9,13 @@ using Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
-public class BlockchainController : BaseController
+
+public class BlockChainController : BaseController
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public BlockchainController(IUnitOfWork unitOfWork,IMapper mapper)
+    public BlockChainController(IUnitOfWork unitOfWork, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -24,90 +24,95 @@ public class BlockchainController : BaseController
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<IEnumerable<BlockchainDto>>> Get()
+    public async Task<ActionResult<IEnumerable<BlockChainDto>>> Get()
     {
-        var blockchain = await _unitOfWork.Blockchains.GetAllAsync();
-        return _mapper.Map<List<BlockchainDto>>(blockchain);
+        var blockChain = await _unitOfWork.BlockChains.GetAllAsync();
+        return _mapper.Map<List<BlockChainDto>>(blockChain);
     }
-    [HttpGet("{id}")]
+
+    [HttpGet("{Id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<BlockchainDto>> Get(int id)
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<BlockChainDto>> Get(int Id)
     {
-        var blockchain = await _unitOfWork.Blockchains.GetByIdAsync(id);
-        if(blockchain == null)
+        var blockChain = await _unitOfWork.BlockChains.GetByIdAsync(Id);
+        if (blockChain == null)
         {
             return NotFound();
         }
-        return _mapper.Map<BlockchainDto>(blockchain);
+        return _mapper.Map<BlockChainDto>(blockChain);
     }
+
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<BlockchainDto>> Post([FromBody] BlockchainDto blockchainDto)
+    public async Task<ActionResult<BlockChainDto>> Post(BlockChainDto blockChainDto)
     {
-        var blockchain = _mapper.Map<BlockChain>(blockchainDto);
-
-        if(blockchain == null)
-            return BadRequest();
-        if (blockchainDto.FechaCreacion == DateOnly.MinValue)
+        var blockChain = _mapper.Map<BlockChain>(blockChainDto);
+        if (blockChainDto.FechaCreacion == DateOnly.MinValue)
         {
-            blockchainDto.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
-            blockchain.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
+            blockChainDto.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
+            blockChain.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
         }
-        if (blockchain.FechaModificacion == DateOnly.MinValue)
+        if (blockChainDto.FechaModificacion == DateOnly.MinValue)
         {
-            blockchainDto.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
-            blockchain.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
+            blockChainDto.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
+            blockChain.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
         }
-        _unitOfWork.Blockchains.Add(blockchain);
+        _unitOfWork.BlockChains.Add(blockChain);
         await _unitOfWork.SaveAsync();
-        blockchainDto.Id = blockchain.Id;
-        return CreatedAtAction(nameof(Post),new {id = blockchain.Id},blockchainDto);
+        if (blockChainDto == null)
+        {
+            return BadRequest();
+        }
+        blockChainDto.Id = blockChain.Id;
+        return CreatedAtAction(nameof(Post), new { id = blockChainDto.Id }, blockChainDto);
     }
+
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<BlockchainDto>> Put(int id, [FromBody] BlockchainDto blockchainDto)
+    public async Task<ActionResult<BlockChainDto>> Put(int id, [FromBody] BlockChainDto blockChainDto)
     {
-        if(blockchainDto.Id == 0)
+        if (blockChainDto.Id == 0)
         {
-            blockchainDto.Id = id;
+            blockChainDto.Id = id;
         }
-        if(blockchainDto.Id != id)
+        if (blockChainDto.Id != id)
         {
             return NotFound();
         }
-        var blockchain = _mapper.Map<BlockChain>(blockchainDto);
-        if(blockchain==null)
-            return BadRequest();
-        if(blockchain.FechaCreacion == DateOnly.MinValue)
+        var blockChain = _mapper.Map<BlockChain>(blockChainDto);
+        if (blockChainDto.FechaCreacion == DateOnly.MinValue)
         {
-            blockchainDto.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
-            blockchain.FechaCreacion = DateOnly.FromDateTime(DateTime.Now); 
+            blockChainDto.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
+            blockChain.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
         }
-        if(blockchainDto.FechaModificacion == DateOnly.MinValue)
+        if (blockChainDto.FechaModificacion == DateOnly.MinValue)
         {
-            blockchainDto.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
-            blockchain.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
+            blockChainDto.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
+            blockChain.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
         }
-        _unitOfWork.Blockchains.Update(blockchain);
+        blockChainDto.Id = blockChain.Id;
+        _unitOfWork.BlockChains.Update(blockChain);
         await _unitOfWork.SaveAsync();
-        return blockchainDto;
+        return blockChainDto;
     }
+
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        var blockchain = await _unitOfWork.Blockchains.GetByIdAsync(id);
-        if(blockchain == null)
+        var blockChain = await _unitOfWork.BlockChains.GetByIdAsync(id);
+        if (blockChain == null)
+        {
             return NotFound();
-        _unitOfWork.Blockchains.Remove(blockchain);
+        }
+        _unitOfWork.BlockChains.Remove(blockChain);
         await _unitOfWork.SaveAsync();
         return NoContent();
     }
-
 }

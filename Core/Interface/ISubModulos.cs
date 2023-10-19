@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 using Core.Entities;
 
 namespace Core.Interfaces;
-public interface ISubModulos : IGenericRepository<SubModulos>
+
+public interface ISubmodulos : IGenericRepository<Submodulos>
 {
 
 }

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using API.Dtos;
 using AutoMapper;
@@ -10,12 +9,13 @@ using Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
+
 public class HiloRespuestaNotificacionController : BaseController
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public HiloRespuestaNotificacionController(IUnitOfWork unitOfWork,IMapper mapper)
+    public HiloRespuestaNotificacionController(IUnitOfWork unitOfWork, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -26,88 +26,93 @@ public class HiloRespuestaNotificacionController : BaseController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<IEnumerable<HiloRespuestaNotificacionDto>>> Get()
     {
-        var hilorespuesta = await _unitOfWork.HiloRespuestaNotificaciones.GetAllAsync();
-        return _mapper.Map<List<HiloRespuestaNotificacionDto>>(hilorespuesta);
+        var hiloRespuestaNotificacion = await _unitOfWork.HiloRespuestaNotificaciones.GetAllAsync();
+        return _mapper.Map<List<HiloRespuestaNotificacionDto>>(hiloRespuestaNotificacion);
     }
-    [HttpGet("{id}")]
+
+    [HttpGet("{Id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<HiloRespuestaNotificacionDto>> Get(int id)
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<HiloRespuestaNotificacionDto>> Get(int Id)
     {
-        var hilorespuesta = await _unitOfWork.HiloRespuestaNotificaciones.GetByIdAsync(id);
-        if(hilorespuesta == null)
+        var hiloRespuestaNotificacion = await _unitOfWork.HiloRespuestaNotificaciones.GetByIdAsync(Id);
+        if (hiloRespuestaNotificacion == null)
         {
             return NotFound();
         }
-        return _mapper.Map<HiloRespuestaNotificacionDto>(hilorespuesta);
+        return _mapper.Map<HiloRespuestaNotificacionDto>(hiloRespuestaNotificacion);
     }
+
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<HiloRespuestaNotificacionDto>> Post([FromBody] HiloRespuestaNotificacionDto hilorespuestaDto)
+    public async Task<ActionResult<HiloRespuestaNotificacionDto>> Post(HiloRespuestaNotificacionDto hiloRespuestaNotificacionDto)
     {
-        var hilorespuesta = _mapper.Map<HiloRespuestaNotificacion>(hilorespuestaDto);
-
-        if(hilorespuesta == null)
-            return BadRequest();
-        if (hilorespuestaDto.FechaCreacion == DateOnly.MinValue)
+        var hiloRespuestaNotificacion = _mapper.Map<HiloRespuestaNotificacion>(hiloRespuestaNotificacionDto);
+        if (hiloRespuestaNotificacionDto.FechaCreacion == DateOnly.MinValue)
         {
-            hilorespuestaDto.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
-            hilorespuesta.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
+            hiloRespuestaNotificacionDto.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
+            hiloRespuestaNotificacion.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
         }
-        if (hilorespuesta.FechaModificacion == DateOnly.MinValue)
+        if (hiloRespuestaNotificacionDto.FechaModificacion == DateOnly.MinValue)
         {
-            hilorespuestaDto.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
-            hilorespuesta.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
+            hiloRespuestaNotificacionDto.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
+            hiloRespuestaNotificacion.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
         }
-        _unitOfWork.HiloRespuestaNotificaciones.Add(hilorespuesta);
+        _unitOfWork.HiloRespuestaNotificaciones.Add(hiloRespuestaNotificacion);
         await _unitOfWork.SaveAsync();
-        hilorespuestaDto.Id = hilorespuesta.Id;
-        return CreatedAtAction(nameof(Post),new {id = hilorespuesta.Id},hilorespuestaDto);
+        if (hiloRespuestaNotificacionDto == null)
+        {
+            return BadRequest();
+        }
+        hiloRespuestaNotificacionDto.Id = hiloRespuestaNotificacion.Id;
+        return CreatedAtAction(nameof(Post), new { id = hiloRespuestaNotificacionDto.Id }, hiloRespuestaNotificacionDto);
     }
+
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<HiloRespuestaNotificacionDto>> Put(int id, [FromBody] HiloRespuestaNotificacionDto hiloRespuestaDto)
+    public async Task<ActionResult<HiloRespuestaNotificacionDto>> Put(int id, [FromBody] HiloRespuestaNotificacionDto hiloRespuestaNotificacionDto)
     {
-        if(hiloRespuestaDto.Id == 0)
+        if (hiloRespuestaNotificacionDto.Id == 0)
         {
-            hiloRespuestaDto.Id = id;
+            hiloRespuestaNotificacionDto.Id = id;
         }
-        if(hiloRespuestaDto.Id != id)
+        if (hiloRespuestaNotificacionDto.Id != id)
         {
             return NotFound();
         }
-        var hiloRespuesta = _mapper.Map<HiloRespuestaNotificacion>(hiloRespuestaDto);
-        if(hiloRespuesta==null)
-            return BadRequest();
-        if(hiloRespuesta.FechaCreacion == DateOnly.MinValue)
+        var hiloRespuestaNotificacion = _mapper.Map<HiloRespuestaNotificacion>(hiloRespuestaNotificacionDto);
+        if (hiloRespuestaNotificacionDto.FechaCreacion == DateOnly.MinValue)
         {
-            hiloRespuestaDto.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
-            hiloRespuesta.FechaCreacion = DateOnly.FromDateTime(DateTime.Now); 
+            hiloRespuestaNotificacionDto.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
+            hiloRespuestaNotificacion.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
         }
-        if(hiloRespuestaDto.FechaModificacion == DateOnly.MinValue)
+        if (hiloRespuestaNotificacionDto.FechaModificacion == DateOnly.MinValue)
         {
-            hiloRespuestaDto.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
-            hiloRespuesta.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
+            hiloRespuestaNotificacionDto.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
+            hiloRespuestaNotificacion.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
         }
-        _unitOfWork.HiloRespuestaNotificaciones.Update(hiloRespuesta);
+        hiloRespuestaNotificacionDto.Id = hiloRespuestaNotificacion.Id;
+        _unitOfWork.HiloRespuestaNotificaciones.Update(hiloRespuestaNotificacion);
         await _unitOfWork.SaveAsync();
-        return hiloRespuestaDto;
+        return hiloRespuestaNotificacionDto;
     }
+
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        var hilorespuesta = await _unitOfWork.HiloRespuestaNotificaciones.GetByIdAsync(id);
-        if(hilorespuesta == null)
+        var hiloRespuestaNotificacion = await _unitOfWork.HiloRespuestaNotificaciones.GetByIdAsync(id);
+        if (hiloRespuestaNotificacion == null)
+        {
             return NotFound();
-        _unitOfWork.HiloRespuestaNotificaciones.Remove(hilorespuesta);
+        }
+        _unitOfWork.HiloRespuestaNotificaciones.Remove(hiloRespuestaNotificacion);
         await _unitOfWork.SaveAsync();
         return NoContent();
     }
-
 }

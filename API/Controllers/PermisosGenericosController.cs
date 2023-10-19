@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using API.Dtos;
 using AutoMapper;
@@ -10,12 +9,13 @@ using Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
-public class PermisosGenericosController : BaseController
+
+public class permisosGenericosController : BaseController
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public PermisosGenericosController(IUnitOfWork unitOfWork,IMapper mapper)
+    public permisosGenericosController(IUnitOfWork unitOfWork, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -26,88 +26,93 @@ public class PermisosGenericosController : BaseController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<IEnumerable<PermisosGenericosDto>>> Get()
     {
-        var permisosgen = await _unitOfWork.PermisoGenericos.GetAllAsync();
-        return _mapper.Map<List<PermisosGenericosDto>>(permisosgen);
+        var permisosGenericos = await _unitOfWork.PermisosGenericos.GetAllAsync();
+        return _mapper.Map<List<PermisosGenericosDto>>(permisosGenericos);
     }
-    [HttpGet("{id}")]
+
+    [HttpGet("{Id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<PermisosGenericosDto>> Get(int id)
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<PermisosGenericosDto>> Get(int Id)
     {
-        var permisosgen = await _unitOfWork.PermisoGenericos.GetByIdAsync(id);
-        if(permisosgen == null)
+        var permisosGenericos = await _unitOfWork.PermisosGenericos.GetByIdAsync(Id);
+        if (permisosGenericos == null)
         {
             return NotFound();
         }
-        return _mapper.Map<PermisosGenericosDto>(permisosgen);
+        return _mapper.Map<PermisosGenericosDto>(permisosGenericos);
     }
+
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<PermisosGenericosDto>> Post([FromBody] PermisosGenericosDto permisosgenDto)
+    public async Task<ActionResult<PermisosGenericosDto>> Post(PermisosGenericosDto permisosGenericosDto)
     {
-        var permisosgen = _mapper.Map<PermisosGenericos>(permisosgenDto);
-
-        if(permisosgen == null)
-            return BadRequest();
-        if (permisosgenDto.FechaCreacion == DateOnly.MinValue)
+        var permisosGenericos = _mapper.Map<PermisosGenericos>(permisosGenericosDto);
+        if (permisosGenericosDto.FechaCreacion == DateOnly.MinValue)
         {
-            permisosgenDto.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
-            permisosgen.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
+            permisosGenericosDto.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
+            permisosGenericos.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
         }
-        if (permisosgen.FechaModificacion == DateOnly.MinValue)
+        if (permisosGenericosDto.FechaModificacion == DateOnly.MinValue)
         {
-            permisosgenDto.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
-            permisosgen.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
+            permisosGenericosDto.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
+            permisosGenericos.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
         }
-        _unitOfWork.PermisoGenericos.Add(permisosgen);
+        _unitOfWork.PermisosGenericos.Add(permisosGenericos);
         await _unitOfWork.SaveAsync();
-        permisosgenDto.Id = permisosgen.Id;
-        return CreatedAtAction(nameof(Post),new {id = permisosgen.Id},permisosgenDto);
+        if (permisosGenericosDto == null)
+        {
+            return BadRequest();
+        }
+        permisosGenericosDto.Id = permisosGenericos.Id;
+        return CreatedAtAction(nameof(Post), new { id = permisosGenericosDto.Id }, permisosGenericosDto);
     }
+
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<PermisosGenericosDto>> Put(int id, [FromBody] PermisosGenericosDto permisosgenDto)
+    public async Task<ActionResult<PermisosGenericosDto>> Put(int id, [FromBody] PermisosGenericosDto permisosGenericosDto)
     {
-        if(permisosgenDto.Id == 0)
+        if (permisosGenericosDto.Id == 0)
         {
-            permisosgenDto.Id = id;
+            permisosGenericosDto.Id = id;
         }
-        if(permisosgenDto.Id != id)
+        if (permisosGenericosDto.Id != id)
         {
             return NotFound();
         }
-        var permisosgen = _mapper.Map<PermisosGenericos>(permisosgenDto);
-        if(permisosgen==null)
-            return BadRequest();
-        if(permisosgen.FechaCreacion == DateOnly.MinValue)
+        var permisosGenericos = _mapper.Map<PermisosGenericos>(permisosGenericosDto);
+        if (permisosGenericosDto.FechaCreacion == DateOnly.MinValue)
         {
-            permisosgenDto.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
-            permisosgen.FechaCreacion = DateOnly.FromDateTime(DateTime.Now); 
+            permisosGenericosDto.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
+            permisosGenericos.FechaCreacion = DateOnly.FromDateTime(DateTime.Now);
         }
-        if(permisosgenDto.FechaModificacion == DateOnly.MinValue)
+        if (permisosGenericosDto.FechaModificacion == DateOnly.MinValue)
         {
-            permisosgenDto.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
-            permisosgen.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
+            permisosGenericosDto.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
+            permisosGenericos.FechaModificacion = DateOnly.FromDateTime(DateTime.Now);
         }
-        _unitOfWork.PermisoGenericos.Update(permisosgen);
+        permisosGenericosDto.Id = permisosGenericos.Id;
+        _unitOfWork.PermisosGenericos.Update(permisosGenericos);
         await _unitOfWork.SaveAsync();
-        return permisosgenDto;
+        return permisosGenericosDto;
     }
+
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        var permisosgen = await _unitOfWork.PermisoGenericos.GetByIdAsync(id);
-        if(permisosgen == null)
+        var permisosGenericos = await _unitOfWork.PermisosGenericos.GetByIdAsync(id);
+        if (permisosGenericos == null)
+        {
             return NotFound();
-        _unitOfWork.PermisoGenericos.Remove(permisosgen);
+        }
+        _unitOfWork.PermisosGenericos.Remove(permisosGenericos);
         await _unitOfWork.SaveAsync();
         return NoContent();
     }
-
 }

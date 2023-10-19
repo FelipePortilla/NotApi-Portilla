@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Core.Entities
 {
-    public class TipoNotificacion
+    public class TipoNotificacion:BaseEntity
     {
     [Required]
     public string NombreTipoNotificacion { get; set; }

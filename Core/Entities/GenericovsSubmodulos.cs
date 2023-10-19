@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Core.Entities;
 
-public class GenericovsSubmodulos
+public class GenericovsSubmodulos:BaseEntity
 {
     [Required]
     public DateOnly FechaCreacion { get; set; }

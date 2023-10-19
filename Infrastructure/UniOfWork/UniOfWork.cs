@@ -2,217 +2,229 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Core.Entities;
 using Core.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
 
-namespace .UniOfWork;
+namespace Infrastructure.UniOfWork;
 
-public interface UniOfWork : IUnitOfWork, IDisposable
+
+public class UnitOfWork : IUnitOfWork,IDisposable
 {
-
-    private IAuditoria _auditorias;
-    private IBlockchain _blockchains;
-    private IEstadoNotificacion _estadoNotificaciones;
-    private IFormato _formatos;
-    private IGenericovsSubmodulos _genericovsSubmodulos;
-    private IHiloRespuestaNotificacion _hiloRespuestaNotificaciones;
-    private IMaestrovsSubmodulos _maestrovsSubmodulos;
-    private IModuloNotificacion _moduloNotificaciones;
-    private IModulosMaestro _modulosMaestros;
-    private IPermisoGenericos _permisoGenericos;
-    private IRadicados _radicados;
-    private IRol _rols;
-    private IRolvsMaestro _rolvsMaestros;
-    private ISubModulos _subModulos;
-    private ITipoNotificacion _tipoNotificaciones;
-    private ITipoRequerimientos _tipoRequerimientos;
-
     private readonly NotiAppContext _context;
-    public UniOfWork(NotiAppContext context)
+    private IAuditoria _Auditorias;
+    private IBlockchain _BlockChains;
+    private IEstadoNotificacion _EstadoNotificaciones;
+    private IFormato _Formatos;
+    private IGenericovsSubmodulos _GenericoVsSubmodulos;
+    private IHiloRespuestaNotificacion _HiloRespuestaNotificaciones;
+    private IMaestrovsSubmodulos _MaestrosVsSubmodulos;
+    private IModulosMaestro _ModuloMaestros;
+    private IModuloNotificacion _ModuloNotificaciones;
+    private IPermisoGenericos _PermisosGenericos;
+    private IRadicados _Radicados;
+    private IRol _Roles;
+    private IRolvsMaestro _RolVsMaestros;
+    private ISubModulos _Submodulos;
+    private ITipoNotificacion _TipoNotificaciones;
+    private ITipoRequerimientos _TipoRequerimientos;
+
+    public UnitOfWork(NotiAppContext context)
     {
         _context = context;
     }
+
     public IAuditoria Auditorias
     {
         get
         {
-            if (_auditorias == null)
+            if (_Auditorias == null)
             {
-                _auditorias = new AuditoriaRepository(_context); // Remember putting the base in the repository of this entity
+                _Auditorias = new AuditoriaRepository(_context); // Remember putting the base in the repository of this entity
             }
-            return _auditorias;
+            return _Auditorias;
         }
     }
-    public IBlockchain Blockchains
+
+    public IBlockchain BlockChains
     {
         get
         {
-            if (_blockchains == null)
+            if (_BlockChains == null)
             {
-                _blockchains = new BlockChainRepository(_context); // Remember putting the base in the repository of this entity
+                _BlockChains = new BlockChainRepository(_context); // Remember putting the base in the repository of this entity
             }
-            return _blockchains;
+            return _BlockChains;
         }
     }
-    public IEstadoNotificacion EstadoNoficaciones
+
+    public IEstadoNotificacion EstadoNotificaciones
     {
         get
         {
-            if (_estadoNotificaciones == null)
+            if (_EstadoNotificaciones == null)
             {
-                _estadoNotificaciones = new EstadoNoficacionRepository(_context); // Remember putting the base in the repository of this entity
+                _EstadoNotificaciones = new EstadoNoficacionRepository(_context); // Remember putting the base in the repository of this entity
             }
-            return _estadoNotificaciones;
+            return _EstadoNotificaciones;
         }
     }
-    public IFormato Formato
+
+    public IFormato Formatos
     {
         get
         {
-            if (_formatos == null)
+            if (_Formatos == null)
             {
-                _formatos = new FormatosRepository(_context); // Remember putting the base in the repository of this entity
+                _Formatos = new FormatosRepository(_context); // Remember putting the base in the repository of this entity
             }
-            return _formatos;
+            return _Formatos;
         }
     }
-    public IGenericovsSubmodulos GeneticovsSubmodulos
+
+    public IGenericovsSubmodulos GenericoVsSubmodulos
     {
         get
         {
-            if (_genericovsSubmodulos == null)
+            if (_GenericoVsSubmodulos == null)
             {
-                _genericovsSubmodulos = new GeneticovsSubmodulosRepository(_context); // Remember putting the base in the repository of this entity
+                _GenericoVsSubmodulos = new GeneticovsSubmodulosRepository(_context); // Remember putting the base in the repository of this entity
             }
-            return _genericovsSubmodulos;
+            return _GenericoVsSubmodulos;
         }
     }
-    public IHiloRespuestaNotificacion HiloRepuestaNotificaciones
+
+    public IHiloRespuestaNotificacion HiloRespuestaNotificaciones
     {
         get
         {
-            if (_hiloRespuestaNotificaciones == null)
+            if (_HiloRespuestaNotificaciones == null)
             {
-                _hiloRespuestaNotificaciones = new HiloRepuestaNotificacionRepository(_context); // Remember putting the base in the repository of this entity
+                _HiloRespuestaNotificaciones = new HiloRepuestaNotificacionRepository(_context); // Remember putting the base in the repository of this entity
             }
-            return _hiloRespuestaNotificaciones;
+            return _HiloRespuestaNotificaciones;
         }
     }
-    public IMaestrovsSubmodulos MaestrovsSubmodulos
+
+    public IMaestrovsSubmodulos MaestrosVsSubmodulos
     {
         get
         {
-            if (_maestrovsSubmodulos == null)
+            if (_MaestrosVsSubmodulos == null)
             {
-                _maestrovsSubmodulos = new MaestrovsSubmoduloRepository(_context); // Remember putting the base in the repository of this entity
+                _MaestrosVsSubmodulos = new MaestrovsSubmoduloRepository(_context); // Remember putting the base in the repository of this entity
             }
-            return _maestrovsSubmodulos;
+            return _MaestrosVsSubmodulos;
         }
     }
-    public IModuloNotificacion ModuloNotificacion
+
+    public IModulosMaestro ModuloMaestros
     {
         get
         {
-            if (_moduloNotificaciones == null)
+            if (_ModuloMaestros == null)
             {
-                _moduloNotificaciones = new ModuloNotificacionRepository(_context); // Remember putting the base in the repository of this entity
+                _ModuloMaestros = new ModuloMaestroRepository(_context); // Remember putting the base in the repository of this entity
             }
-            return _moduloNotificaciones;
+            return _ModuloMaestros;
         }
     }
-    public IModulosMaestro ModuloMaestro
+
+    public IModuloNotificacion ModuloNotificaciones
     {
         get
         {
-            if (_modulosMaestros == null)
+            if (_ModuloNotificaciones == null)
             {
-                _modulosMaestros = new ModuloMaestroRepository(_context); // Remember putting the base in the repository of this entity
+                _ModuloNotificaciones = new ModuloNotificacionRepository(_context); // Remember putting the base in the repository of this entity
             }
-            return _modulosMaestros;
+            return _ModuloNotificaciones;
         }
     }
+
     public IPermisoGenericos PermisosGenericos
     {
         get
         {
-            if (_permisoGenericos == null)
+            if (_PermisosGenericos == null)
             {
-                _permisoGenericos = new PermisosGenericosRepository(_context); // Remember putting the base in the repository of this entity
+                _PermisosGenericos = new PermisosGenericosRepository(_context); // Remember putting the base in the repository of this entity
             }
-            return _permisoGenericos;
+            return _PermisosGenericos;
         }
     }
+
     public IRadicados Radicados
     {
         get
         {
-            if (_radicados == null)
+            if (_Radicados == null)
             {
-                _radicados = new RadicadosRepository(_context); // Remember putting the base in the repository of this entity
+                _Radicados = new RadicadosRepository(_context); // Remember putting the base in the repository of this entity
             }
-            return _radicados;
-        }
-    }
-    public IRol Rol
-    {
-        get
-        {
-            if (_rols == null)
-            {
-                _rols = new RolRepository(_context); // Remember putting the base in the repository of this entity
-            }
-            return _rols;
-        }
-    }
-    public IRolvsMaestro RolvsMaestro
-    {
-        get
-        {
-            if (_rolvsMaestros == null)
-            {
-                _rolvsMaestros = new RolvsMaestroRepository(_context); // Remember putting the base in the repository of this entity
-            }
-            return _rolvsMaestros;
-        }
-    }
-    public ISubModulos SubModulo
-    {
-        get
-        {
-            if (_subModulos == null)
-            {
-                _subModulos = new SubModulosRepository(_context); // Remember putting the base in the repository of this entity
-            }
-            return _subModulos;
-        }
-    }
-    public ITipoNotificacion TipoNotificacion
-    {
-        get
-        {
-            if (_tipoNotificaciones == null)
-            {
-                _tipoNotificaciones = new TipoNotificacionRepository(_context); // Remember putting the base in the repository of this entity
-            }
-            return _tipoNotificaciones;
-        }
-    }
-    public ITipoRequerimientos TipoRequerimiento
-    {
-        get
-        {
-            if (_tipoRequerimientos == null)
-            {
-                _tipoRequerimientos = new TipoRequerimientoRepository(_context); // Remember putting the base in the repository of this entity
-            }
-            return _tipoRequerimientos;
+            return _Radicados;
         }
     }
 
-    public void Dispose()
+    public IRol Roles
     {
-        throw new NotImplementedException();
+        get
+        {
+            if (_Roles == null)
+            {
+                _Roles = new RolRepository(_context); // Remember putting the base in the repository of this entity
+            }
+            return _Roles;
+        }
+    }
+
+    public IRolvsMaestro RolVsMaestros
+    {
+        get
+        {
+            if (_RolVsMaestros == null)
+            {
+                _RolVsMaestros = new RolvsMaestroRepository(_context); // Remember putting the base in the repository of this entity
+            }
+            return _RolVsMaestros;
+        }
+    }
+
+    public ISubModulos Submodulos
+    {
+        get
+        {
+            if (_Submodulos == null)
+            {
+                _Submodulos = new SubmodulosRepository(_context); // Remember putting the base in the repository of this entity
+            }
+            return _Submodulos;
+        }
+    }
+
+    public ITipoNotificacion TipoNotificaciones
+    {
+        get
+        {
+            if (_TipoNotificaciones == null)
+            {
+                _TipoNotificaciones = new TipoNotificacionRepository(_context); // Remember putting the base in the repository of this entity
+            }
+            return _TipoNotificaciones;
+        }
+    }
+
+    public ITipoRequerimientos TipoRequerimientos
+    {
+        get
+        {
+            if (_TipoRequerimientos == null)
+            {
+                _TipoRequerimientos = new TipoRequerimientoRepository(_context); // Remember putting the base in the repository of this entity
+            }
+            return _TipoRequerimientos;
+        }
     }
 
     public Task<int> SaveAsync()
@@ -220,8 +232,8 @@ public interface UniOfWork : IUnitOfWork, IDisposable
         return _context.SaveChangesAsync();
     }
 
-
-
-
+    public void Dispose()
+    {
+        _context.Dispose();
+    }
 }
-

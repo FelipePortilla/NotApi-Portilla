@@ -8,10 +8,16 @@ namespace Core.Entities
 {
     public class Rol : BaseEntity
     {
+
+
         [Required]
-    public DateOnly FechaCreacion { get; set; }
-    [Required]
-    public DateOnly FechaModificacion { get; set; }
-    public ICollection<ModuloNotificacion> ModuloNotificaciones { get; set; }
+        public string NombreRol { get; set; }
+        public DateOnly FechaCreacion { get; set; }
+        [Required]
+        public DateOnly FechaModificacion { get; set; }
+        public ICollection<ModuloNotificacion> ModuloNotificaciones { get; set; }
+        public ICollection<GenericovsSubmodulos> GenericovsSubmodulos { get; set; }
+        public ICollection<RolvsMaestro> RolvsMaestros { get; set; }
+
     }
 }

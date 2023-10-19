@@ -7,15 +7,17 @@ using System.ComponentModel.DataAnnotations;
 namespace Core.Entities
 {
     public class ModuloMaestro : BaseEntity
+
     {
+        public string NombreModuloMaestro { get; set; }
         [Required]
         public DateOnly FechaCreacion { get; set; }
         [Required]
         public DateOnly FechaModificacion { get; set; }
-        public int IdModulosMaestroFk { get; set; }
-        public ModuloMaestro ModulosMaestros { get; set; }
-        public int IdSubModulosFk { get; set; }
-        public SubModulos SubModulos { get; set; }
         public ICollection<GenericovsSubmodulos> GenericovsSubmodulos { get; set; }
+        public ICollection<MaestrovsSubmodulos> MaestrosvsSubmodulos { get; set; }
+        public ICollection<RolvsMaestro> RolvsMaestros { get; set; }
+    
+
     }
 }

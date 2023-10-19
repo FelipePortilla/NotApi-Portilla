@@ -16,5 +16,7 @@ namespace Core.Entities
     public Rol Rols { get; set; }
     public int IdModulosMaestroFk { get; set; }
     public ModuloMaestro ModulosMaestros { get; set; }
+    public ICollection<RolvsMaestro> RolvsMaestros { get; set; }
+    
     }
 }

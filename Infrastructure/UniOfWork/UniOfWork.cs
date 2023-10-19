@@ -6,7 +6,7 @@ using Core.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
 
-namespace Infrastructure.UniOfWork;
+namespace .UniOfWork;
 
 public interface UniOfWork : IUnitOfWork, IDisposable
 {

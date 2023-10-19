@@ -2,12 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using API.Dtos;
+using AutoMapper;
+using Core.Entities;
+using Core.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 
 namespace API.Controllers;
 public class AuditoriaController : BaseController
 {
-    
+
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 

@@ -47,7 +47,7 @@ public class BlockchainController : BaseController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<BlockchainDto>> Post([FromBody] BlockchainDto blockchainDto)
     {
-        var blockchain = _mapper.Map<Blockchain>(blockchainDto);
+        var blockchain = _mapper.Map<BlockChain>(blockchainDto);
 
         if(blockchain == null)
             return BadRequest();
@@ -80,7 +80,7 @@ public class BlockchainController : BaseController
         {
             return NotFound();
         }
-        var blockchain = _mapper.Map<Blockchain>(blockchainDto);
+        var blockchain = _mapper.Map<BlockChain>(blockchainDto);
         if(blockchain==null)
             return BadRequest();
         if(blockchain.FechaCreacion == DateOnly.MinValue)

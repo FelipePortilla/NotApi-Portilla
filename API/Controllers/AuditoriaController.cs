@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace API.Controllers;
 public class AuditoriaController : BaseController
 {
+    
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
